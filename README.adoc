@@ -1,0 +1,124 @@
+= REST API for comparing JSON base64 encoded binary data
+
+== Pre-requisites
+* JDK 11+
+* Docker (_Nice to have_)
+
+
+== Build & Run
+After cloning this repository, you can either:
+
+=== From your favorite IDE
+- Open it and wait until the project dependencies finish loading
+- Start the app from the `FileDiffApplication` class
+
+=== Locally from the terminal
+Execute the commands below from the root folder:
+
+`Unix`
+[source, bash, numbered]
+--
+./gradlew clean build
+./gradlew bootRun
+--
+
+`Windows`
+[source, bash, numbered]
+--
+gradlew.bat clean build
+gradlew.bat bootRun
+--
+
+=== Using Docker
+Firstly, build the optimized image preferably from the terminal:
+
+`Unix`
+[source, bash]
+--
+./gradlew clean bootBuildImage
+--
+
+`Windows`
+[source, bash]
+--
+gradlew.bat clean bootBuildImage
+--
+
+Then, simply start the app with:
+[source, bash]
+--
+docker rm file-diff & docker run -p 8080:8080 file-diff:0.0.1-SNAPSHOT
+--
+
+
+== Testing the APIs
+Confirm your API is up by invoking the endpoint: http://localhost:8080/actuator/health
+
+Expected result:
+[source, json]
+--
+{
+    "status": "UP"
+}
+--
+If the previous step results 200 OK, you can safely go ahead, otherwise, please verify you're attending the pre-requisites and have successfully executed the *Build & Run* instructions above.
+
+=== Steps
+
+1. Upload the 1st binary data in your terminal with:
+
+[source, curl]
+--
+curl --request POST 'http://localhost:8080/v1/diff/1/left' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "data": "TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQ="
+}'
+--
+
+2. Then upload the 2nd binary data with:
+
+[source, curl]
+--
+curl --request POST 'http://localhost:8080/v1/diff/1/right' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "data": "TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXM="
+}'
+--
+
+3. Finally, verify the results by hitting:
+
+[source, curl]
+--
+curl --request GET 'http://localhost:8080/v1/diff/1'
+--
+
+Expected result:
+[source, json]
+--
+{
+    "equal": false,
+    "sameSize": true,
+    "filesLength": 26,
+    "offset": 25
+}
+--
+
+
+== API Documentation
+Available in Swagger and OpenAPI formats:
+
+- http://localhost:8080/swagger-ui.html
+- http://localhost:8080/v3/api-docs
+
+
+== How this solution could be improved
+
+- This app has been built as proof of concept by using h2 in memory for storing the binary data for future comparison, the choice of not storing them as files was looking forward to running it dockerized, where Windows users could face issues due to volume sharing and stuff.
+
+Instead of storing the data into the database or file system, an option would be uploading to a bucket in S3 (if using AWS) or equivalent into another cloud provider, or even using a 3rd party solution such as https://cloudinary.com/[Cloudinary].
+
+- Alongside with the idea of uploading files into cloud provider storage solutions, implementing the solution as serverless function and using async means, given the complexity of the solution, can probably save tons of processing, so this API could be implemented using an interpreted language to avoid cold startup as well.
+
+- Uploading files encoded as base64 binary data is not a thing for small files, but for large ones it definitely is, so uploading as multipart will tackle the work regardless of the file size.

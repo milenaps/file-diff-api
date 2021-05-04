@@ -1,10 +1,13 @@
 package com.mps.sample.filediff.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "file_diffs")
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 public class FileDiff {
 
     @Id
@@ -13,8 +16,10 @@ public class FileDiff {
 
     private boolean equal;
     private boolean sameSize;
-    private long diffOffset;
-    private long diffLength;
+    private long filesLength;
+
+    @Column(name = "diff_offset")
+    private long offset;
 
     public boolean isEqual() {
         return equal;
@@ -24,7 +29,7 @@ public class FileDiff {
         this.equal = equal;
     }
 
-    public boolean isSameSize() {
+    public Boolean isSameSize() {
         return sameSize;
     }
 
@@ -32,20 +37,20 @@ public class FileDiff {
         this.sameSize = sameSize;
     }
 
-    public long getDiffOffset() {
-        return diffOffset;
+    public Long getFilesLength() {
+        return filesLength;
     }
 
-    public void setDiffOffset(long diffOffset) {
-        this.diffOffset = diffOffset;
+    public void setFilesLength(long filesLength) {
+        this.filesLength = filesLength;
     }
 
-    public long getDiffLength() {
-        return diffLength;
+    public Long getOffset() {
+        return offset;
     }
 
-    public void setDiffLength(long diffLength) {
-        this.diffLength = diffLength;
+    public void setOffset(long offset) {
+        this.offset = offset;
     }
 
     @Override
@@ -53,12 +58,12 @@ public class FileDiff {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FileDiff fileDiff = (FileDiff) o;
-        return equal == fileDiff.equal && sameSize == fileDiff.sameSize && diffOffset == fileDiff.diffOffset && diffLength == fileDiff.diffLength;
+        return Objects.equals(equal, fileDiff.equal) && Objects.equals(sameSize, fileDiff.sameSize) && Objects.equals(offset, fileDiff.offset) && Objects.equals(filesLength, fileDiff.filesLength);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(equal, sameSize, diffOffset, diffLength);
+        return Objects.hash(equal, sameSize, offset, filesLength);
     }
 
     @Override
@@ -66,8 +71,8 @@ public class FileDiff {
         return "FileDiff{" +
                 "equal=" + equal +
                 ", sameSize=" + sameSize +
-                ", diffOffset=" + diffOffset +
-                ", diffLength=" + diffLength +
+                ", offset=" + offset +
+                ", filesLength=" + filesLength +
                 '}';
     }
 }

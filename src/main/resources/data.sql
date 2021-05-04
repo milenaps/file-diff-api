@@ -6,7 +6,7 @@ CREATE TABLE file_diffs (
   equal BOOLEAN,
   same_size BOOLEAN,
   diff_offset INT,
-  diff_length INT
+  files_length INT
 );
 
 CREATE TABLE buckets (

@@ -56,12 +56,12 @@ public class Bucket {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Bucket bucket = (Bucket) o;
-        return id == bucket.id && name.equals(bucket.name) && Objects.equals(diff, bucket.diff);
+        return name.equals(bucket.name) && Objects.equals(diff, bucket.diff);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, diff);
+        return Objects.hash(name, diff);
     }
 
     @Override
