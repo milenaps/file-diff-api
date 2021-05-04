@@ -30,7 +30,7 @@ gradlew.bat bootRun
 --
 
 === Using Docker
-Firstly, build the optimized image preferably from the terminal:
+Firstly, build the image from your terminal:
 
 `Unix`
 [source, bash]
@@ -43,6 +43,16 @@ Firstly, build the optimized image preferably from the terminal:
 --
 gradlew.bat clean bootBuildImage
 --
+
+[NOTE]
+====
+Alternatively, you can generate the jar via `gradle build`, and build the docker image using the vanilla command:
+
+[source, bash]
+--
+docker build -t file-diff:0.0.1-SNAPSHOT .
+--
+====
 
 Then, simply start the app with:
 [source, bash]

@@ -72,6 +72,11 @@ public class FileDiffServiceImpl implements FileDiffService {
         return diff.get();
     }
 
+    /**
+     * Executes the uploaded files comparison asynchronously and stores the result into the db
+     *
+     * @param bucket entity containing the files used for comparison
+     */
     @Async
     void processDiffs(final Bucket bucket) {
         FileDiff diff = new FileDiff();
