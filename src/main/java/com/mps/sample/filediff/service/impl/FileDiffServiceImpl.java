@@ -22,7 +22,7 @@ public class FileDiffServiceImpl implements FileDiffService {
     private FileDiffRepository diffRepository;
 
     @Override
-    public void uploadLeft(String id, byte[] data) throws FileDiffAlreadyExistsException {
+    public Bucket uploadLeft(String id, byte[] data) throws FileDiffAlreadyExistsException {
         Optional<Bucket> optBucket = diffRepository.findByName(id);
         Bucket bucket;
         if (optBucket.isPresent()) {
@@ -38,10 +38,12 @@ public class FileDiffServiceImpl implements FileDiffService {
         diffRepository.save(bucket);
 
         if (bucket.getRightFile() != null) processDiffs(bucket);
+
+        return bucket;
     }
 
     @Override
-    public void uploadRight(String id, byte[] data) throws FileDiffAlreadyExistsException {
+    public Bucket uploadRight(String id, byte[] data) throws FileDiffAlreadyExistsException {
         Optional<Bucket> optBucket = diffRepository.findByName(id);
         Bucket bucket;
         if (optBucket.isPresent()) {
@@ -57,6 +59,8 @@ public class FileDiffServiceImpl implements FileDiffService {
         diffRepository.save(bucket);
 
         if (bucket.getLeftFile() != null) processDiffs(bucket);
+
+        return bucket;
     }
 
     @Override
